@@ -1,6 +1,6 @@
 appModule.controller('CommentController',function($scope) {
 	$scope.comments = [];
 	$scope.add = function(c) {
-		$scope.comments.push(c);
+		$scope.comments.unshift(c);
 	};
 });
