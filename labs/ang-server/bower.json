@@ -1,0 +1,23 @@
+{
+  "name": "ang-server",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Arunkumar Krishnamoorthy <arunram.krish@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/arunramkrish/emids_angular",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "angularjs#~1.4.8",
+    "jasmine-core": "jasmine#~2.4.1"
+  }
+}

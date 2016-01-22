@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Example - example-guide-concepts-1-production</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.js"></script>
+  <style type="text/css">
+  	div.spicy div {
+  		padding: 10px;
+  		border: solid 2px blue;
+	}
+  </style>
+</head>
+<body ng-app='drag'>
+    <div ng-controller="dragControl1">
+	<input type="text" ng-model="msg"/>0
+	<span my:draggable>Drag ME</span>
+	</div>
+	<div ng-controller="dragControl2">
+  <span my:draggable>Drag ME Too</span>
+	</div>
+</body>
+<script>
+angular.module('drag', []).
+controller('dragControl1',function($scope) {
+  $scope.msg = "dragging1";
+}).controller('dragControl2',function($scope) {
+  $scope.msg = "dragging2";
+}).directive('myDraggable', function($document) {
+  var myLinkingFunction = function(scope, element, attr) {
+    var startX = 0, startY = 0, x = 0, y = 0;
+    element.css({
+     position: 'relative',
+     border: '1px solid red',
+     backgroundColor: 'lightgrey',
+     cursor: 'pointer',
+     display: 'block',
+     width: '65px'
+    });
+    var initialText = element[0].innerHTML;
+    element.on('mousedown', function(event) {
+      // Prevent default dragging of selected content
+      event.preventDefault();
+      startX = event.screenX - x;
+      startY = event.screenY - y;
+      $document.on('mousemove', mousemove);
+      $document.on('mouseup', mouseup);
+      initialText = element[0].innerHTML;
+    });
+
+    function mousemove(event) {
+      y = event.screenY - startY;
+      x = event.screenX - startX;
+      element.css({
+        top: y + 'px',
+        left:  x + 'px'
+      });
+    }
+
+    function mouseup() {
+      $document.off('mousemove', mousemove);
+      $document.off('mouseup', mouseup);
+      element[0].innerHTML = initialText;
+    }
+  };
+
+  return {
+    link: myLinkingFunction,
+    restrict:'EA',,
+    template: '{{msg}}'};
+});
+</script>

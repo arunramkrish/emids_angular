@@ -1,0 +1,61 @@
+<!doctype html>
+<html ng-app="myapp">
+<head>
+<title>Todo</title>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-route/angular-route.js"></script>
+</head>
+<body>
+	<div ng-controller="DataController">
+	</div>
+</body>
+<script>
+	var appModule = angular.module("myapp",[]);
+	appModule.value("runningMode", "standalone");
+	
+	function DataAccess(runMode) {
+		var runningMode = runMode;
+		this.do = function() {
+			console.log("Data Access " + runningMode);
+		};
+	}
+	
+	//factory
+	appModule.factory("DataFactory", function(runningMode) {
+		return new DataAccess(runningMode);
+	});
+	
+	//service
+	appModule.service("DataService", ["runningMode", DataAccess]);
+	
+	//provider
+	appModule.provider("Data", function DataProvider() {
+		var mode = "defaultMode";
+		this.setMode = function(m) {
+			mode = m;
+		}
+		this.$get = function() {
+			return new DataAccess(mode);
+		};
+	});
+	
+	
+	appModule.config(["DataProvider", function(dataProvider) {
+		dataProvider.setMode("server Mode");
+	}]);
+	
+	
+	appModule.controller("DataController", ["$scope", "DataFactory", "DataService", "Data", 
+		function($scope, df, ds, dp) {
+			console.log("From factory");
+			df.do();
+			console.log("From Service");
+			ds.do();
+			console.log("From provider");
+			dp.do();
+		}]);
+	
+	
+	
+	
+</script>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html ng-app="myapp">
+<head>
+<title>Todo</title>
+<script src="http://code.angularjs.org/1.4.8/angular.js"></script>
+</head>
+<body>
+<div ng-controller="appctrl">
+	<label>Title:</label>
+	<input type="text" ng-model="todo.title" placeholder="Enter Todo title here">
+	<label>Description:</label>
+	<input type="text" ng-model="todo.description" placeholder="Enter  here as well"></input>
+	<input type="button" ng-click="addTodo();" value="Add Todo"/>
+	<hr>
+	{{"text" | bold:todo}}
+	<div><h1>Todo List</h1>
+		<table>
+			<tr><th>Title</th><th>Description</th><th>Tags</th></tr>
+			<tr ng-repeat="t in todos" todo>
+			</tr>
+		</table>
+	</div>
+</div>
+</body>
+<script>
+	var appModule = angular.module("myapp",['tagger']);
+	appModule.controller("appctrl", ['$scope', 'tag', function($scope, tag) {
+		$scope.todos = [];
+		$scope.todo = {};
+		$scope.addTodo = function() {
+			var todoObject = $scope.todo;
+			todoObject.tags = tag.tagTodo(todoObject);
+			$scope.todos.push(todoObject);
+			$scope.todo = null;
+		};
+	}]);
+	appModule.directive("todo", function() {
+		return {
+			template : "<td>{{todo.title}}</td>" + 
+				"<td>{{todo.description}}</td>" +
+				"<td>" +
+				"<span ng-repeat='tag in todo.tags'>" +
+					"{{tag}}" + 
+				"</span></td>"
+
+		};
+	});
+	appModule.filter("bold", function() {
+		return (function(input, param) {
+			if ((param) && (param.description)) {
+			return input.toUpperCase() + param.description.toLowerCase();
+			} else {
+				return input.toUpperCase();
+			}
+		});
+	});
+</script>
+<script type="text/javascript">
+angular.module('tagger', [])
+.factory('tag', [function() {
+	var tagTodo = function(todoObject) {
+		return todoObject.description.split(" ");
+	};
+  return {
+    tagTodo: tagTodo
+  };
+}]);
+</script>
+
+</html>

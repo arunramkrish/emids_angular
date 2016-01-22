@@ -1,0 +1,25 @@
+<!doctype html>
+<html ng-app="myapp">
+<head>
+<title>Hello World</title>
+<script src="http://code.angularjs.org/1.4.8/angular.min.js"></script>
+</head>
+<body>
+<div ng-controller="appctrl" ng-init="name='Arun'">
+	<label>Name:</label>
+	<input type="text" ng-model="name" placeholder="Enter a name here">
+	<input type="text" ng-model="name" placeholder="Enter a name here as well">
+	<input type="button" ng-click="convertUppercase();" value="To upper"/>
+	<hr>
+	<h1>Hello {{nameInUppercase}}!</h1>
+</div>
+</body>
+<script>
+	var appModule = angular.module("myapp",[]);
+	appModule.controller("appctrl", function($scope) {
+		$scope.convertUppercase = function() {
+			$scope.nameInUppercase = $scope.name.toUpperCase();
+		};
+	});
+</script>
+</html>
