@@ -1,0 +1,51 @@
+<!doctype html>
+<html ng-app="post-client">
+<head>
+<title>Http Client</title>
+<script src="bower_components/angular/angular.js"></script>
+</head>
+<body>
+<div ng-controller="PostController">
+<input type="text" ng-model="post.text"/>
+<input type="button" ng-click="add();" value="Submit"/>
+<span ng-repeat="p in posts">{{p.id}}-{{p.text}}</span>
+</div>
+</body>
+<script>
+var app = angular.module("post-client", []);
+function PostService($http) {
+	var successFunction = function(s) {
+		return (function(response) {
+			//do conversion
+			console.log("Response received by service");
+			s(response);
+		});
+	};
+	this.addPost = function(post, s, e) {
+		$http.post("posts", JSON.stringify(post)).then(successFunction(s), e);
+	};
+	
+	this.getPosts = function(s, e) {
+		$http.get("posts", null).then(s, e);
+	}
+}
+app.service("PostService", ["$http", PostService]);
+app.controller("PostController", ["$scope", "PostService", function($scope, svc) {
+	$scope.posts = [];
+	$scope.post = {};
+	var success = function(response) {
+		$scope.posts.push(response.data);
+	}
+	
+	$scope.add = function() {
+		svc.addPost($scope.post, success);
+	};
+	svc.getPosts(function(res) {
+		if (res.data) {
+			$scope.posts = res.data;
+		}
+	});
+}]);
+
+</script>
+</html>
