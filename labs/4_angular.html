@@ -22,6 +22,9 @@
     <span ng-repeat="c in invoice.currencies">
       {{invoice.total(c) | currency:c}}
     </span>
+    <div ng-repeat="c in invoice.currencies">
+      <span>{{invoice.convertedValue[c] | currency:c}}</span>
+    </div>
     <button class="btn" ng-click="pay()">Pay</button>
   </div>
 </div>
@@ -33,9 +36,11 @@ angular.module('invoice3', ['finance3'])
   this.cost = 2;
   this.inCurr = 'EUR';
   this.currencies = c.currencies;
-
+  this.convertedValue = [];
+	
   this.total = function total(outCurr) {
-    return c.convert(this.qty * this.cost, this.inCurr, outCurr);
+	this.convertedValue[outCurr] = c.convert(this.qty * this.cost, this.inCurr, outCurr);
+    return this.convertedValue[outCurr];
   };
   $scope.pay = function pay() {
     window.alert("Thanks! Total amount ");
@@ -49,16 +54,16 @@ angular.module('finance3', [])
         'http://query.yahooapis.com/v1/public/yql?q=select * from '+
         'yahoo.finance.xchange where pair in ("PAIRS")&format=json&'+
         'env=store://datatables.org/alltableswithkeys&callback=JSON_CALLBACK';
-  var currencies = ['USD', 'EUR', 'CNY'];
+  var currenciesImpl = ['USD', 'EUR', 'CNY', 'INR'];
   var usdToForeignRates = {};
 
-  var convert = function (amount, inCurr, outCurr) {
+  var convertImpl = function (amount, inCurr, outCurr) {
     return amount * usdToForeignRates[outCurr] / usdToForeignRates[inCurr];
   };
 
   var refresh = function() {
     var url = YAHOO_FINANCE_URL_PATTERN.
-               replace('PAIRS', 'USD' + currencies.join('","USD'));
+               replace('PAIRS', 'USD' + currenciesImpl.join('","USD'));
     return $http.jsonp(url).success(function(data) {
       var newUsdToForeignRates = {};
       angular.forEach(data.query.results.rate, function(rate) {
@@ -72,8 +77,8 @@ angular.module('finance3', [])
   refresh();
 
   return {
-    currencies: currencies,
-    convert: convert,
+    currencies: currenciesImpl,
+    convert: convertImpl,
     refresh: refresh
   };
 }]);

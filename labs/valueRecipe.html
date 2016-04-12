@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" ng-app="myApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Example - example-guide-concepts-1-production</title>
+  <script src="bower_components/angular/angular.js"></script>
+</head>
+<body >
+<div ng-controller="DemoController as demo">
+    Client ID: {{demo.clientId}}
+	<input type="text" ng-model="demo.clientId"/>
+</div>
+<div ng-controller="DemoController as demo">
+    Client ID: {{demo.clientId}}
+	<input type="text" ng-model="demo.clientId"/>
+</div>
+</body>
+
+<script type="text/javascript">
+var myAppModule = angular.module("myApp",[]);
+var clientId = {};
+clientId.name="Velalar json";
+
+clientId = new Object();
+clientId.name="Velalar newObject";
+
+function Client(id) {
+this.id = id;
+}
+var client = new Client("Velalar");
+
+var fn = new Function('this.id = arguments[0];');
+var client = new fn("velalar-Erode");
+
+myAppModule.value("clientId", "Velalar");
+myAppModule.factory('apiToken', ['clientId', function apiTokenFactory(clientId) {
+	console.log("apitoken factory getting invoked");
+  var encrypt = function(data1, data2) {
+    // NSA-proof encryption algorithm:
+    return (data1 + ':' + data2).toUpperCase();
+  };
+
+  var secret = window.localStorage.getItem('myApp.secret');
+  var apiToken = encrypt(clientId, secret);
+
+  return apiToken;
+}]);
+myAppModule.controller("DemoController", ["$scope", "apiToken", function($scope, c) {
+	$scope.clientId = this.clientId = c;
+}]);
+</script>
+</html>

@@ -17,6 +17,7 @@
       <option ng-repeat="c in invoice.currencies">{{c}}</option>
     </select>
   </div>
+  <span ng-bind="invoice.cost"></span>
   <div>
     <b>Total:</b>
     <span ng-repeat="c in invoice.currencies">

@@ -22,8 +22,7 @@
 	</div>
 </div>
 </body>
-<script>
-	var appModule = angular.module("myapp",['tagger']);
+<script>	var appModule = angular.module("myapp",['tagger']);
 	appModule.controller("appctrl", ['$scope', 'tag', function($scope, tag) {
 		$scope.todos = [];
 		$scope.todo = {};
